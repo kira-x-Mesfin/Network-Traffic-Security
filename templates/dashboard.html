@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Traffic Security</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">&#9679;</span> NETWORK TRAFFIC SECURITY</div>
+  <div class="controls">
+    <select id="mode" title="Capture mode">
+      <option value="simulate">Simulation (lab)</option>
+      <option value="live">Live capture (Scapy)</option>
+    </select>
+    <input id="iface" type="text" placeholder="interface (optional)">
+    <button id="btnStart" class="btn btn-green">Start</button>
+    <button id="btnStop" class="btn btn-red" disabled>Stop</button>
+  </div>
+</header>
+
+<main>
+  <!-- stat cards -->
+  <section class="cards">
+    <div class="card"><h3>Total Packets</h3><div class="value cyan" id="cPackets">0</div></div>
+    <div class="card"><h3>Data Transferred</h3><div class="value blue" id="cBytes">0 B</div></div>
+    <div class="card"><h3>Threat Alerts</h3><div class="value red" id="cAlerts">0</div></div>
+    <div class="card"><h3>Blocked Connections</h3><div class="value orange" id="cBlocked">0</div></div>
+    <div class="card status"><h3>Engine Status</h3>
+      <div class="value" id="cStatus">Stopped</div>
+      <div class="sub" id="cMode">-</div></div>
+  </section>
+
+  <!-- charts -->
+  <section class="charts">
+    <div class="panel wide"><h2>Traffic Timeline (bytes/min)</h2><canvas id="chTimeline"></canvas></div>
+    <div class="panel"><h2>Protocols</h2><canvas id="chProto"></canvas></div>
+    <div class="panel"><h2>Top Talkers</h2><canvas id="chTalkers"></canvas></div>
+    <div class="panel"><h2>Threats by Severity</h2><canvas id="chSeverity"></canvas></div>
+  </section>
+
+  <!-- alerts -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Security Alerts</h2>
+      <div id="sevFilter" class="filter">
+        <button data-s="all" class="active">All</button>
+        <button data-s="Low">Low</button><button data-s="Medium">Medium</button>
+        <button data-s="High">High</button><button data-s="Critical">Critical</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+    <table id="alertsTable">
+      <thead><tr><th>Time</th><th>Severity</th><th>Rule</th><th>Source</th>
+        <th>Target</th><th>Details</th><th>Recommendation</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    </div>
+  </section>
+
+  <!-- connections + blocked -->
+  <section class="split">
+    <div class="panel">
+      <h2>Recent Connections</h2>
+      <div class="table-wrap">
+      <table id="connTable">
+        <thead><tr><th>Time</th><th>Source</th><th>Destination</th>
+          <th>Proto</th><th>Port</th><th>Size</th><th>Status</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Blocked IPs</h2>
+      <ul id="blockedList" class="blocked"></ul>
+    </div>
+  </section>
+
+  <footer class="foot">Defensive monitoring only &mdash; run exclusively on networks you are authorized to observe.</footer>
+</main>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
